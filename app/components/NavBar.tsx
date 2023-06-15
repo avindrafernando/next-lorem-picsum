@@ -20,11 +20,15 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import PhotoIcon from "@mui/icons-material/Photo";
+import SettingsIcon from "@mui/icons-material/Settings";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 const drawerWidth = 240;
 const navItems = [
   { name: "Home", icon: <HomeIcon />, href: "/" },
   { name: "Posts", icon: <PhotoIcon />, href: "/posts" },
+  { name: "Authors", icon: <AccountBoxIcon />, href: "/authors" },
+  { name: "Settings", icon: <SettingsIcon />, href: "/settings" },
 ];
 
 const NavBar = () => {

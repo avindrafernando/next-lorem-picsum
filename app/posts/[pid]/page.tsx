@@ -8,7 +8,20 @@ import {
   CardMedia,
   Link,
   Typography,
-} from "@/lib/mui";
+} from "../../lib/mui";
+import Image from "next/image";
+
+export async function generateStaticParams() {
+  const posts = await fetch("https://picsum.photos/list").then((res) =>
+    res.json()
+  );
+
+  const first75Posts = posts.slice(0, 75);
+
+  return first75Posts.map((post: { id: number }) => ({
+    pid: post?.id.toString(),
+  }));
+}
 
 const getSrc = (id: string) => {
   const imagePostWidth = 250;
@@ -16,25 +29,53 @@ const getSrc = (id: string) => {
   return `https://picsum.photos/id/${id}/${imagePostWidth}/${imagePostHeight}`;
 };
 
-async function getData(id: string) {
-  const postsData = await fetch(`https://picsum.photos/id/${id}/info`, {
-    next: { revalidate: 10 },
-  });
-  return postsData.json();
+async function getPost(id: string) {
+  // Static Data Fetching
+  const post = await fetch(`https://picsum.photos/id/${id}/info`);
+
+  // Static Data Fetching with Revalidation
+  // const post = await fetch(`https://picsum.photos/id/${id}/info`, {
+  //   next: { revalidate: 5 },
+  // });
+
+  // Dynamic Data Fetching
+  // const post = await fetch(`https://picsum.photos/id/${id}/info`, {
+  //   cache: "no-store",
+  // });
+
+  return post.json();
 }
 
 const Post = async ({ params: { pid } }: { params: { pid: string } }) => {
-  const post = await getData(pid);
+  const post = await getPost(pid);
 
   return (
     <Box sx={{ padding: 3 }}>
+      <Typography paragraph align="right">
+        Last Updated: {new Date().toLocaleTimeString()}
+      </Typography>
       <Card sx={{ margin: 2.5, width: 310, height: 515 }}>
         <CardActionArea>
-          <CardMedia
-            sx={{ minHeight: 375, minWidth: 250 }}
-            image={getSrc(post.id)}
-            title={post.author}
-          />
+          <CardMedia sx={{ minHeight: 375, minWidth: 250 }} title={post.author}>
+            <Box
+              sx={{
+                position: "relative",
+                overflow: "hidden",
+                minHeight: 375,
+              }}
+            >
+              <Image
+                src={getSrc(post.id)}
+                alt={`Photo by ${post.author}`}
+                fill
+                placeholder="blur"
+                blurDataURL={`${getSrc(post.id)}?blur=10`}
+                style={{
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
+          </CardMedia>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               {post.author}
