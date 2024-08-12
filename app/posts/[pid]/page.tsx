@@ -46,6 +46,8 @@ async function getPost(id: string) {
   return post.json();
 }
 
+const blurDataURL = `data:image/webp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNUUl1XDwAC3AF2ZgbhCQAAAABJRU5ErkJggg==`;
+
 const Post = async ({ params: { pid } }: { params: { pid: string } }) => {
   const post = await getPost(pid);
 
@@ -69,7 +71,7 @@ const Post = async ({ params: { pid } }: { params: { pid: string } }) => {
                 alt={`Photo by ${post.author}`}
                 fill
                 placeholder="blur"
-                blurDataURL={`${getSrc(post.id)}?blur=10`}
+                blurDataURL={blurDataURL}
                 style={{
                   objectFit: "cover",
                 }}
