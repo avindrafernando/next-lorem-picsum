@@ -1,21 +1,25 @@
 # 🔥 PAIN POINT 1: State Management Confusion
 
 ## Overview
+
 This branch demonstrates the most common confusion developers face when working with React Server Components - mixing server and client state management.
 
 ## What's Broken Here
+
 Navigate to `/posts` to see a page that attempts to use client-side state management patterns in a Server Component, which will fail.
 
 ## Key Issues Demonstrated
 
 ### 1. **useState/useEffect in Server Components**
+
 ```tsx
 // ❌ This doesn't work in Server Components
-const [searchTerm, setSearchTerm] = useState('');
+const [searchTerm, setSearchTerm] = useState("");
 const [favorites, setFavorites] = useState<number[]>([]);
 ```
 
 ### 2. **Event Handlers in Server Components**
+
 ```tsx
 // ❌ Event handlers don't work in Server Components
 const handleSearch = (event) => {
@@ -24,6 +28,7 @@ const handleSearch = (event) => {
 ```
 
 ### 3. **Interactive Elements Without Client Boundary**
+
 ```tsx
 // ❌ These require client-side JavaScript
 <TextField onChange={handleSearch} />
@@ -32,10 +37,11 @@ const handleSearch = (event) => {
 ```
 
 ### 4. **Mixing Server Data with Client State**
+
 ```tsx
 // ❌ Trying to filter server data with client state
-const filteredPosts = serverPosts.filter(post => 
-  post.author.includes(searchTerm) // searchTerm is client state!
+const filteredPosts = serverPosts.filter(
+  (post) => post.author.includes(searchTerm) // searchTerm is client state!
 );
 ```
 
@@ -62,6 +68,7 @@ const filteredPosts = serverPosts.filter(post =>
 4. Notice that interactive elements don't work
 
 ## The Fix (Teaser)
+
 The solution involves proper component boundaries and strategic use of the "use client" directive. This would be demonstrated in a separate "fixed" branch or example.
 
 ---

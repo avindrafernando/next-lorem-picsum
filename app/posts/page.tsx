@@ -1,7 +1,7 @@
 // ❌ PAIN POINT 1: State Management Confusion
 // This file demonstrates common mistakes developers make with RSCs
 
-import React, { useState, useEffect } from 'react'; // ❌ Importing useState in a server component
+import React, { useState, useEffect } from "react"; // ❌ Importing useState in a server component
 import {
   Grid,
   Card,
@@ -38,14 +38,14 @@ async function getPosts() {
 // This component cannot use useState, useEffect, or other client-side hooks
 const Posts = async () => {
   // ❌ This will cause an error - useState cannot be used in Server Components
-  const [searchTerm, setSearchTerm] = useState(''); // Error: React Hook "useState" cannot be called in a Server Component
+  const [searchTerm, setSearchTerm] = useState(""); // Error: React Hook "useState" cannot be called in a Server Component
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false); // Error: Same issue
   const [favorites, setFavorites] = useState<number[]>([]); // Error: Same issue
-  
-  // ❌ This will also cause an error - useEffect cannot be used in Server Components  
+
+  // ❌ This will also cause an error - useEffect cannot be used in Server Components
   useEffect(() => {
     // Error: React Hook "useEffect" cannot be called in a Server Component
-    console.log('Posts loaded');
+    console.log("Posts loaded");
   }, []);
 
   const posts = await getPosts();
@@ -53,9 +53,10 @@ const Posts = async () => {
 
   // ❌ MISTAKE 2: Trying to filter data based on client state in a server component
   // This won't work because searchTerm is client state but we're in a server component
-  const filteredPosts = first75Posts.filter((post: any) => 
-    post.author.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (!showOnlyFavorites || favorites.includes(post.id))
+  const filteredPosts = first75Posts.filter(
+    (post: any) =>
+      post.author.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (!showOnlyFavorites || favorites.includes(post.id))
   );
 
   // ❌ MISTAKE 3: Event handlers in Server Components don't work
@@ -64,9 +65,9 @@ const Posts = async () => {
   };
 
   const toggleFavorite = (postId: number) => {
-    setFavorites(prev => 
-      prev.includes(postId) 
-        ? prev.filter(id => id !== postId)
+    setFavorites((prev) =>
+      prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
         : [...prev, postId]
     ); // Error: This won't work in a server component
   };
@@ -75,7 +76,7 @@ const Posts = async () => {
     <Box sx={{ padding: 3 }}>
       {/* ❌ MISTAKE 4: Interactive elements in Server Components */}
       {/* These components require client-side JavaScript but we're in a server component */}
-      <Box sx={{ mb: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
+      <Box sx={{ mb: 3, display: "flex", gap: 2, alignItems: "center" }}>
         <TextField
           label="Search posts..."
           value={searchTerm}
@@ -97,8 +98,8 @@ const Posts = async () => {
 
       <Typography paragraph align="right" sx={{ mb: 0 }}>
         Last Updated: {new Date().toLocaleTimeString()}
-        {/* ❌ MISTAKE 5: Trying to show client state in server component */}
-        | Showing {filteredPosts.length} of {first75Posts.length} posts
+        {/* ❌ MISTAKE 5: Trying to show client state in server component */}|
+        Showing {filteredPosts.length} of {first75Posts.length} posts
         {showOnlyFavorites && ` (${favorites.length} favorites)`}
       </Typography>
 
@@ -110,11 +111,13 @@ const Posts = async () => {
       >
         {filteredPosts.map((post: any) => (
           <Grid key={post.id}>
-            <Card sx={{ 
-              margin: 2.5,
-              // ❌ MISTAKE 6: Conditional styling based on client state
-              border: favorites.includes(post.id) ? '2px solid gold' : 'none'
-            }}>
+            <Card
+              sx={{
+                margin: 2.5,
+                // ❌ MISTAKE 6: Conditional styling based on client state
+                border: favorites.includes(post.id) ? "2px solid gold" : "none",
+              }}
+            >
               <Link
                 href={`/posts/${encodeURIComponent(post.id)}`}
                 style={{
@@ -150,7 +153,7 @@ const Posts = async () => {
                     <Typography gutterBottom variant="h5" component="h2">
                       {post.author}
                       {/* ❌ MISTAKE 7: Showing client state in server-rendered content */}
-                      {favorites.includes(post.id) && ' ⭐'}
+                      {favorites.includes(post.id) && " ⭐"}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -192,32 +195,31 @@ const Posts = async () => {
                   </Link>
                 </Button>
                 {/* ❌ MISTAKE 8: Interactive buttons in Server Components */}
-                <Button 
-                  size="small" 
+                <Button
+                  size="small"
                   color="secondary"
                   onClick={() => toggleFavorite(post.id)} // ❌ onClick won't work
                 >
-                  {favorites.includes(post.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                  {favorites.includes(post.id)
+                    ? "Remove from Favorites"
+                    : "Add to Favorites"}
                 </Button>
               </CardActions>
             </Card>
           </Grid>
         ))}
       </Grid>
-      
+
       {/* ❌ MISTAKE 9: Complex client-side logic in Server Component */}
-      <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-        <Typography variant="h6">
-          Developer Confusion Examples:
-        </Typography>
+      <Box sx={{ mt: 3, p: 2, bgcolor: "grey.100", borderRadius: 1 }}>
+        <Typography variant="h6">Developer Confusion Examples:</Typography>
         <Typography variant="body2" component="div">
           • Search term: "{searchTerm}" (❌ This won't update)
-          <br />
-          • Show favorites only: {showOnlyFavorites ? 'Yes' : 'No'} (❌ This won't update)
-          <br />
-          • Total favorites: {favorites.length} (❌ This won't update)
-          <br />
-          • Filtered results: {filteredPosts.length} (❌ This won't update)
+          <br />• Show favorites only: {showOnlyFavorites ? "Yes" : "No"} (❌
+          This won't update)
+          <br />• Total favorites: {favorites.length} (❌ This won't update)
+          <br />• Filtered results: {filteredPosts.length} (❌ This won't
+          update)
         </Typography>
       </Box>
     </Box>
