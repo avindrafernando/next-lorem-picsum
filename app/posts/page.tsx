@@ -33,7 +33,7 @@ const getAuthorUserName = (str: string) => {
 
 // ✅ Server-side data fetching (this part is good)
 async function getPosts() {
-  console.log('🏗️ SERVER: Fetching posts data...');
+  console.log("🏗️ SERVER: Fetching posts data...");
   const posts = await fetch("https://picsum.photos/list");
   return posts.json();
 }
@@ -44,7 +44,9 @@ const Posts = async () => {
   const posts = await getPosts();
   const first75Posts = posts.slice(0, 75);
 
-  console.log('🏗️ SERVER: Posts component rendered, now client components will mount...');
+  console.log(
+    "🏗️ SERVER: Posts component rendered, now client components will mount..."
+  );
 
   return (
     <Box sx={{ padding: 3 }}>
@@ -53,7 +55,15 @@ const Posts = async () => {
       </Typography>
 
       {/* ❌ MISTAKE 2: Waterfall Alert Box */}
-      <Box sx={{ mb: 3, p: 2, bgcolor: 'error.light', color: 'error.contrastText', borderRadius: 1 }}>
+      <Box
+        sx={{
+          mb: 3,
+          p: 2,
+          bgcolor: "error.light",
+          color: "error.contrastText",
+          borderRadius: 1,
+        }}
+      >
         <Typography variant="h6">🌊 Client-Server Waterfall Alert!</Typography>
         <Typography variant="body2">
           Watch the browser console to see the waterfall effect:
@@ -62,9 +72,10 @@ const Posts = async () => {
           <br />
           2. 🔴 CLIENT: PostInteractionWrapper mounts → fetches user data
           <br />
-          3. 🔴 CLIENT: UserProfileLoader waits for user → fetches profile  
+          3. 🔴 CLIENT: UserProfileLoader waits for user → fetches profile
           <br />
-          4. 🔴 CLIENT: RecommendationEngine waits for profile → fetches recommendations
+          4. 🔴 CLIENT: RecommendationEngine waits for profile → fetches
+          recommendations
           <br />
           5. 🔴 CLIENT: Each post card independently fetches interaction data
         </Typography>
@@ -131,11 +142,7 @@ const PostCard = ({ post }: { post: any }) => {
               <Typography gutterBottom variant="h5" component="h2">
                 {post.author}
               </Typography>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                component="p"
-              >
+              <Typography variant="body2" color="textSecondary" component="p">
                 {getAuthorUserName(post.author_url)}
               </Typography>
             </CardContent>
@@ -170,7 +177,7 @@ const PostCard = ({ post }: { post: any }) => {
               Image Source
             </Link>
           </Button>
-          
+
           {/* ❌ MISTAKE 5: Each card triggers its own client-side data request */}
           <PostCardInteractions postId={post.id} />
         </CardActions>
@@ -182,7 +189,7 @@ const PostCard = ({ post }: { post: any }) => {
 // ❌ Component that creates another waterfall dependency
 const PostCardInteractions = ({ postId }: { postId: number }) => {
   return (
-    <Box sx={{ display: 'inline-block' }}>
+    <Box sx={{ display: "inline-block" }}>
       {/* This will be a client component that fetches data for each post */}
       <PostLikeButton postId={postId} />
     </Box>

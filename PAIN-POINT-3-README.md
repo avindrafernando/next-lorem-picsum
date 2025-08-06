@@ -1,20 +1,24 @@
 # 🌊 PAIN POINT 3: Client-Server Waterfalls
 
 ## Overview
+
 This branch demonstrates how poor component architecture creates request waterfalls that severely impact loading performance.
 
 ## What's Broken Here
+
 Navigate to `/posts` to see a page that takes several seconds to load due to sequential client-side requests.
 
 ## The Waterfall Sequence
 
 ### Step 1: Server Renders (✅ Good)
+
 ```tsx
 // Server fetches posts data immediately
 const posts = await getPosts(); // ~0ms
 ```
 
 ### Step 2: Client Component Mounts (❌ Waterfall Begins)
+
 ```tsx
 // PostInteractionWrapper mounts and fetches user
 useEffect(() => {
@@ -23,6 +27,7 @@ useEffect(() => {
 ```
 
 ### Step 3: Child Component Waits (❌ Waterfall Continues)
+
 ```tsx
 // UserProfileLoader only mounts AFTER user is loaded
 useEffect(() => {
@@ -31,6 +36,7 @@ useEffect(() => {
 ```
 
 ### Step 4: Nested Component Waits (❌ Waterfall Deepens)
+
 ```tsx
 // RecommendationEngine only mounts AFTER profile is loaded
 useEffect(() => {
@@ -39,14 +45,18 @@ useEffect(() => {
 ```
 
 ### Step 5: Individual Cards Load (❌ Even More Requests)
+
 ```tsx
 // Each PostCard makes its own request
-{posts.map(post => 
-  <PostCard key={post.id} post={post} /> // Each card = another request
-)}
+{
+  posts.map(
+    (post) => <PostCard key={post.id} post={post} /> // Each card = another request
+  );
+}
 ```
 
 ## Total Impact
+
 - **Server render**: ~0ms ✅
 - **User load**: ~800ms (blocked)
 - **Profile load**: ~600ms (blocked)
@@ -57,6 +67,7 @@ useEffect(() => {
 ## Visual Indicators
 
 The page shows real-time progress:
+
 1. Loading indicators for each step
 2. Console logs showing the sequence
 3. Color-coded completion status
@@ -65,17 +76,25 @@ The page shows real-time progress:
 ## Key Anti-Patterns Demonstrated
 
 ### 1. **Nested Client Component Dependencies**
+
 ```tsx
-<PostInteractionWrapper>      {/* Fetches user */}
-  <UserProfileLoader>         {/* Waits for user, then fetches profile */}
-    <RecommendationEngine>    {/* Waits for profile, then fetches recs */}
-      <PostList />            {/* Finally renders posts */}
+<PostInteractionWrapper>
+  {" "}
+  {/* Fetches user */}
+  <UserProfileLoader>
+    {" "}
+    {/* Waits for user, then fetches profile */}
+    <RecommendationEngine>
+      {" "}
+      {/* Waits for profile, then fetches recs */}
+      <PostList /> {/* Finally renders posts */}
     </RecommendationEngine>
   </UserProfileLoader>
 </PostInteractionWrapper>
 ```
 
 ### 2. **Sequential useEffect Chains**
+
 ```tsx
 // ❌ Each component waits for the previous one
 Component1: useEffect(() => fetch1(), []);
@@ -84,14 +103,18 @@ Component3: useEffect(() => fetch3(), []); // Waits for Component2
 ```
 
 ### 3. **Individual Component Requests**
+
 ```tsx
 // ❌ Each card makes its own request
-{posts.map(post => 
-  <PostCard post={post} /> // 75 individual requests!
-)}
+{
+  posts.map(
+    (post) => <PostCard post={post} /> // 75 individual requests!
+  );
+}
 ```
 
 ### 4. **Poor Suspense Boundaries**
+
 ```tsx
 // ❌ No Suspense boundaries to optimize loading
 <ClientComponent>
