@@ -34,38 +34,38 @@ const getAuthorUserName = (str: string) => {
 
 // ❌ MISTAKE 1: Async function that can fail without proper error handling
 async function getPosts() {
-  console.log('🏗️ SERVER: Fetching posts...');
-  
+  console.log("🏗️ SERVER: Fetching posts...");
+
   // ❌ Simulate potential failures without error boundaries
   const random = Math.random();
   if (random < 0.3) {
-    throw new Error('SERVER ERROR: Posts API is temporarily unavailable');
+    throw new Error("SERVER ERROR: Posts API is temporarily unavailable");
   }
-  
+
   const posts = await fetch("https://picsum.photos/list");
-  
+
   // ❌ No error handling for failed fetch
   if (!posts.ok) {
     throw new Error(`HTTP Error: ${posts.status}`);
   }
-  
+
   return posts.json();
 }
 
 // ❌ MISTAKE 2: Another async function prone to failure
 async function getPostStats() {
-  console.log('🏗️ SERVER: Fetching post statistics...');
-  
+  console.log("🏗️ SERVER: Fetching post statistics...");
+
   // ❌ Another potential failure point
   const random = Math.random();
   if (random < 0.4) {
-    throw new Error('STATS ERROR: Statistics service is down');
+    throw new Error("STATS ERROR: Statistics service is down");
   }
-  
+
   return {
     totalPosts: 300,
     totalAuthors: 50,
-    totalViews: 1000000
+    totalViews: 1000000,
   };
 }
 
@@ -74,7 +74,7 @@ const Posts = async () => {
   // ❌ These can fail and crash the entire page
   const posts = await getPosts(); // Can throw error
   const stats = await getPostStats(); // Can throw error
-  
+
   const first75Posts = posts.slice(0, 75);
 
   return (
@@ -83,7 +83,8 @@ const Posts = async () => {
       <Alert severity="error" sx={{ mb: 3 }}>
         <Typography variant="h6">💥 Error Boundary Nightmare Demo</Typography>
         <Typography variant="body2">
-          This page has multiple error scenarios. Refresh the page several times to trigger different errors:
+          This page has multiple error scenarios. Refresh the page several times
+          to trigger different errors:
           <br />
           • 30% chance: Posts API failure (crashes entire page)
           <br />
@@ -92,8 +93,7 @@ const Posts = async () => {
           • Client components have their own error issues
           <br />
           • No error boundaries to contain failures
-          <br />
-          • Poor error messages that don't help users
+          <br />• Poor error messages that don't help users
         </Typography>
       </Alert>
 
@@ -102,10 +102,11 @@ const Posts = async () => {
       </Typography>
 
       {/* ❌ MISTAKE 4: Displaying server data without error context */}
-      <Box sx={{ mb: 3, p: 2, bgcolor: 'info.light', borderRadius: 1 }}>
+      <Box sx={{ mb: 3, p: 2, bgcolor: "info.light", borderRadius: 1 }}>
         <Typography variant="h6">Post Statistics</Typography>
         <Typography>
-          Total Posts: {stats.totalPosts} | Authors: {stats.totalAuthors} | Views: {stats.totalViews.toLocaleString()}
+          Total Posts: {stats.totalPosts} | Authors: {stats.totalAuthors} |
+          Views: {stats.totalViews.toLocaleString()}
         </Typography>
       </Box>
 
@@ -113,7 +114,6 @@ const Posts = async () => {
       <UnstableServerComponent>
         <NestedErrorComponent>
           <ProblematicClientComponent>
-            
             {/* ❌ MISTAKE 6: Main content without error boundaries */}
             <Grid
               container
@@ -125,13 +125,12 @@ const Posts = async () => {
                 <PostCardWithErrors key={post.id} post={post} index={index} />
               ))}
             </Grid>
-
           </ProblematicClientComponent>
         </NestedErrorComponent>
       </UnstableServerComponent>
 
       {/* ❌ MISTAKE 7: Footer that depends on potentially failed data */}
-      <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+      <Box sx={{ mt: 3, p: 2, bgcolor: "grey.100", borderRadius: 1 }}>
         <Typography variant="body2">
           Showing {first75Posts.length} posts from {stats.totalAuthors} authors
         </Typography>
@@ -187,14 +186,10 @@ const PostCardWithErrors = ({ post, index }: { post: any; index: number }) => {
               <Typography gutterBottom variant="h5" component="h2">
                 {post.author}
               </Typography>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                component="p"
-              >
+              <Typography variant="body2" color="textSecondary" component="p">
                 {getAuthorUserName(post.author_url)}
               </Typography>
-              
+
               {/* ❌ MISTAKE 10: Operations that can fail on each card */}
               {index % 5 === 0 && (
                 <Typography variant="caption" color="error">
