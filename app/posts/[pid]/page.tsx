@@ -48,7 +48,13 @@ async function getPost(id: string) {
 
 const blurDataURL = `data:image/webp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNUUl1XDwAC3AF2ZgbhCQAAAABJRU5ErkJggg==`;
 
-const Post = async ({ params: { pid } }: { params: { pid: string } }) => {
+const Post = async (props: { params: Promise<{ pid: string }> }) => {
+  const params = await props.params;
+
+  const {
+    pid
+  } = params;
+
   const post = await getPost(pid);
 
   return (

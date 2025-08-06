@@ -56,7 +56,7 @@ const Posts = async () => {
         alignItems="center"
       >
         {first75Posts.map((post: any) => (
-          <Grid item lg key={post.id}>
+          <Grid key={post.id}>
             <Card sx={{ margin: 2.5 }}>
               <Link
                 href={`/posts/${encodeURIComponent(post.id)}`}

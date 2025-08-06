@@ -71,7 +71,9 @@ const NavBar = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+      <Box suppressHydrationWarning>
+        <CssBaseline enableColorScheme />
+      </Box>
       <AppBar component="nav">
         <Toolbar>
           <IconButton
@@ -87,6 +89,7 @@ const NavBar = () => {
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            suppressHydrationWarning
           >
             My Featured Posts
           </Typography>
@@ -107,6 +110,7 @@ const NavBar = () => {
               width: drawerWidth,
             },
           }}
+          suppressHydrationWarning
         >
           {drawer}
         </Drawer>
