@@ -46,39 +46,45 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
     const fetchData = async () => {
       try {
         // ❌ First API call - get single post info
-        console.log('🌐 API Call 1: Fetching post info...');
-        const postResponse = await fetch(`https://picsum.photos/id/${params.pid}/info`);
+        console.log("🌐 API Call 1: Fetching post info...");
+        const postResponse = await fetch(
+          `https://picsum.photos/id/${params.pid}/info`
+        );
         const postData = await postResponse.json();
         setPost(postData);
         setLoading(false);
 
         // ❌ MISTAKE 4: Sequential API calls instead of parallel
         // These should be done in parallel, not one after another
-        
+
         // Second API call - get all posts (unnecessary over-fetching)
-        console.log('🌐 API Call 2: Fetching ALL posts (over-fetching)...');
-        const allPostsResponse = await fetch('https://picsum.photos/list');
+        console.log("🌐 API Call 2: Fetching ALL posts (over-fetching)...");
+        const allPostsResponse = await fetch("https://picsum.photos/list");
         const allPostsData = await allPostsResponse.json();
         setAllPosts(allPostsData);
 
         // ❌ Third API call - filter author posts (could be done on server)
-        console.log('🌐 API Call 3: Re-fetching to find author posts...');
-        const authorPostsData = allPostsData.filter((p: any) => p.author === postData.author);
+        console.log("🌐 API Call 3: Re-fetching to find author posts...");
+        const authorPostsData = allPostsData.filter(
+          (p: any) => p.author === postData.author
+        );
         setAuthorPosts(authorPostsData);
         setAuthorLoading(false);
 
         // ❌ Fourth API call - get "related" posts (unnecessary logic on client)
-        console.log('🌐 API Call 4: Processing related posts on client...');
+        console.log("🌐 API Call 4: Processing related posts on client...");
         setTimeout(() => {
           const related = allPostsData
-            .filter((p: any) => p.id !== postData.id && p.author !== postData.author)
+            .filter(
+              (p: any) => p.id !== postData.id && p.author !== postData.author
+            )
             .slice(0, 3);
           setRelatedPosts(related);
           setRelatedLoading(false);
         }, 1000); // Artificial delay to show loading
 
         // ❌ Fifth API call - get post "statistics" (fake API call)
-        console.log('🌐 API Call 5: Fetching post statistics...');
+        console.log("🌐 API Call 5: Fetching post statistics...");
         setTimeout(() => {
           setPostStats({
             views: Math.floor(Math.random() * 10000),
@@ -87,9 +93,8 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
           });
           setStatsLoading(false);
         }, 1500); // Another artificial delay
-
       } catch (error) {
-        console.error('❌ Error in client-side data fetching:', error);
+        console.error("❌ Error in client-side data fetching:", error);
         setLoading(false);
         setAuthorLoading(false);
         setRelatedLoading(false);
@@ -102,7 +107,7 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
 
   // ❌ MISTAKE 5: More unnecessary API calls on user interaction
   const handleRefresh = async () => {
-    console.log('🌐 API Call 6: Unnecessary refresh call...');
+    console.log("🌐 API Call 6: Unnecessary refresh call...");
     setLoading(true);
     // Refetch data that hasn't changed
     const response = await fetch(`https://picsum.photos/id/${params.pid}/info`);
@@ -114,19 +119,21 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
   // ❌ MISTAKE 6: Another unnecessary API call for "checking" data
   const handleCheckAuthor = async () => {
     if (!post) return;
-    
-    console.log('🌐 API Call 7: Redundant author verification...');
+
+    console.log("🌐 API Call 7: Redundant author verification...");
     // This data is already available!
-    const response = await fetch('https://picsum.photos/list');
+    const response = await fetch("https://picsum.photos/list");
     const allPosts = await response.json();
     const authorPosts = allPosts.filter((p: any) => p.author === post.author);
-    
-    alert(`Found ${authorPosts.length} posts by ${post.author} (data we already had!)`);
+
+    alert(
+      `Found ${authorPosts.length} posts by ${post.author} (data we already had!)`
+    );
   };
 
   if (loading) {
     return (
-      <Box sx={{ padding: 3, display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ padding: 3, display: "flex", justifyContent: "center" }}>
         <CircularProgress />
         <Typography sx={{ ml: 2 }}>
           Making unnecessary API calls... Check console to see the fiasco!
@@ -147,12 +154,20 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
     <Box sx={{ padding: 3 }}>
       {/* ❌ MISTAKE 7: Real-time data that doesn't need to be real-time */}
       <Typography paragraph align="right">
-        Last Updated: {new Date().toLocaleTimeString()} 
+        Last Updated: {new Date().toLocaleTimeString()}
         (❌ This updates every second for no reason)
       </Typography>
 
       {/* Debug Information */}
-      <Box sx={{ mb: 3, p: 2, bgcolor: 'error.light', color: 'error.contrastText', borderRadius: 1 }}>
+      <Box
+        sx={{
+          mb: 3,
+          p: 2,
+          bgcolor: "error.light",
+          color: "error.contrastText",
+          borderRadius: 1,
+        }}
+      >
         <Typography variant="h6">🔥 Fetch Fiasco Debug Info:</Typography>
         <Typography variant="body2">
           • Made 5+ API calls for a single post page
@@ -162,12 +177,11 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
           • Did server-side work on the client
           <br />
           • Created unnecessary loading states
-          <br />
-          • Check browser console to see all the API calls!
+          <br />• Check browser console to see all the API calls!
         </Typography>
       </Box>
 
-      <Card sx={{ margin: 2.5, width: 310, height: 'auto' }}>
+      <Card sx={{ margin: 2.5, width: 310, height: "auto" }}>
         <CardActionArea>
           <CardMedia sx={{ minHeight: 375, minWidth: 250 }} title={post.author}>
             <Box
@@ -196,7 +210,7 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
             <Typography variant="body2" color="textSecondary" component="p">
               Post ID: {post.id}
             </Typography>
-            
+
             {/* ❌ MISTAKE 8: Showing loading states for data that could be pre-rendered */}
             <Divider sx={{ my: 2 }} />
             <Typography variant="h6">Post Statistics:</Typography>
@@ -206,7 +220,10 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
               <Box>
                 <Chip label={`Views: ${postStats?.views}`} sx={{ m: 0.5 }} />
                 <Chip label={`Likes: ${postStats?.likes}`} sx={{ m: 0.5 }} />
-                <Chip label={`Downloads: ${postStats?.downloads}`} sx={{ m: 0.5 }} />
+                <Chip
+                  label={`Downloads: ${postStats?.downloads}`}
+                  sx={{ m: 0.5 }}
+                />
               </Box>
             )}
           </CardContent>
@@ -256,12 +273,12 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
         {authorLoading ? (
           <CircularProgress />
         ) : (
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
             {authorPosts.slice(0, 5).map((p: any) => (
-              <Chip 
-                key={p.id} 
-                label={`Post ${p.id}`} 
-                onClick={() => window.location.href = `/posts/${p.id}`}
+              <Chip
+                key={p.id}
+                label={`Post ${p.id}`}
+                onClick={() => (window.location.href = `/posts/${p.id}`)}
                 clickable
               />
             ))}
@@ -274,12 +291,12 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
         {relatedLoading ? (
           <CircularProgress />
         ) : (
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
             {relatedPosts.map((p: any) => (
-              <Chip 
-                key={p.id} 
-                label={`${p.author} - ${p.id}`} 
-                onClick={() => window.location.href = `/posts/${p.id}`}
+              <Chip
+                key={p.id}
+                label={`${p.author} - ${p.id}`}
+                onClick={() => (window.location.href = `/posts/${p.id}`)}
                 clickable
               />
             ))}
@@ -288,7 +305,7 @@ const PostPageClient = ({ params }: { params: { pid: string } }) => {
       </Box>
 
       {/* Performance Impact Indicator */}
-      <Box sx={{ mt: 3, p: 2, bgcolor: 'warning.light', borderRadius: 1 }}>
+      <Box sx={{ mt: 3, p: 2, bgcolor: "warning.light", borderRadius: 1 }}>
         <Typography variant="body2">
           ⚠️ Performance Impact: This page made {5 + (post ? 2 : 0)} API calls
           <br />
