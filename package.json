@@ -16,16 +16,20 @@
     "@types/node": "^22.2.0",
     "@types/react": "19.1.9",
     "@types/react-dom": "19.1.7",
-    "eslint": "^8.42.0",
-    "eslint-config-next": "15.4.5",
-    "next": "15.4.5",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "15.5.28",
+    "next": "15.5.28",
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "sharp": "^0.33.4",
+    "sharp": "^0.35.5",
     "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": "24.x"
   },
   "overrides": {
     "@types/react": "19.1.9",
-    "@types/react-dom": "19.1.7"
+    "@types/react-dom": "19.1.7",
+    "postcss": "^8.5.31"
   }
 }
