@@ -18,7 +18,7 @@
     "@types/react-dom": "19.1.7",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.5.28",
-    "next": "15.5.28",
+    "next": "15.5.29",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "sharp": "^0.35.5",
